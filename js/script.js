@@ -21,6 +21,7 @@ const popupRecall = () => {
       target.classList.contains("popup-close") ||
       !target.closest(".popup-content")
     ) {
+      event.preventDefault();
       recallPopup.style.display = "none";
     }
   });
@@ -52,6 +53,7 @@ const popupOrder = () => {
       target.classList.contains("popup-close") ||
       !target.closest(".popup-content")
     ) {
+      event.preventDefault();
       orederPopup.style.display = "none";
     }
   });
@@ -83,6 +85,7 @@ const popupCheck = () => {
       target.classList.contains("popup-close") ||
       !target.closest(".popup-content")
     ) {
+      event.preventDefault();
       checkPopup.style.display = "none";
     }
   });
