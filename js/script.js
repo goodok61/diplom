@@ -95,6 +95,38 @@ popupCheck();
 /**
  * 
  * 
+ //модалка "Получить консультацию"
+ * 
+ *
+ */
+
+const popupConsult = () => {
+  const consultLink = document.querySelectorAll(".consultation-btn"),
+    consultPopup = document.querySelector(".popup-consultation");
+  
+  consultLink.forEach((item) => {
+    item.addEventListener("click", (event) => {
+      event.preventDefault();
+      consultPopup.style.display = "block";
+    });
+  });
+  consultPopup.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (
+      target.classList.contains("popup-close") ||
+      !target.closest(".popup-content")
+    ) {
+      event.preventDefault();
+      consultPopup.style.display = "none";
+    }
+  });
+};
+popupConsult();
+
+/**
+ * 
+ * 
  //аккордеон "Часто задаваемые вопросы"
  * 
  *
@@ -164,7 +196,7 @@ const calc = () => {
   const accordion = document.getElementById("accordion"),
     tabs = accordion.querySelectorAll(".panel-collapse"),
     tabsArray = Array.prototype.slice.call(tabs);
-    console.log(tabsArray);
+    // console.log(tabsArray);
     
 
   accordion.addEventListener("click", (event) => {
@@ -224,21 +256,29 @@ const sendForm = () => {
   };
 
   allForms.forEach((item) => {
-    console.log(item);
+    // console.log(item);
     
     const inputs = item.querySelectorAll("input");
     item.addEventListener("submit", (event) => {
       event.preventDefault();
       item.appendChild(statusMessage);
       statusMessage.textContent = loadMessage;
-      if (item.getAttribute("id") == "form3") {
-        statusMessage.style.cssText = "color:#ffffff";
-      }
+      console.log(item.parentNode.parentNode.parentNode);
+      
       const formData = new FormData(item);
       let body = {};
       formData.forEach((val, key) => {
         body[key] = val;
       });
+                if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+                  let question = document.querySelector(
+                    'input[name="user_quest"]'
+                  );
+                  body.user_quest = question.value;
+                  console.log(body);
+                  
+                  console.log("попался");
+                }
       postData(body)
         .then((response) => {
           if (response.status !== 200) {
@@ -256,6 +296,10 @@ const sendForm = () => {
             statusMessage.remove();
           }, 5000);
         });
+        if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+          let question = document.querySelector('input[name="user_quest"]');
+          question.value = '';  
+        }
     });
     inputs.forEach((itemInput) => {
       itemInput.value = "";
@@ -264,7 +308,8 @@ const sendForm = () => {
 
         if (
           target.getAttribute("name") == "user_name" ||
-          target.getAttribute("name") == "user_message"
+          target.getAttribute("name") == "user_message" ||
+          target.getAttribute("name") == "user_quest"
         ) {
           target.value = target.value.replace(/[^\W]/gi, "");
         } else if (target.getAttribute("name") == "user_email") {
@@ -274,6 +319,7 @@ const sendForm = () => {
         }
       });
     });
+    
   });
 };
 
