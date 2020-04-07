@@ -14,7 +14,7 @@ const popupRecall = () => {
     })
   })
   recallPopup.addEventListener("click", (event) => {
-    
+
     const target = event.target;
 
     if (
@@ -103,7 +103,7 @@ popupCheck();
 const popupConsult = () => {
   const consultLink = document.querySelectorAll(".consultation-btn"),
     consultPopup = document.querySelector(".popup-consultation");
-  
+
   consultLink.forEach((item) => {
     item.addEventListener("click", (event) => {
       event.preventDefault();
@@ -139,7 +139,7 @@ const tabsFAQ = () => {
     event.preventDefault();
     let target = event.target;
     target = target.closest(".panel-heading");
-    
+
     const hideBlocks = () => {
       const blocks = accordion.querySelectorAll(".panel-collapse");
       blocks.forEach(item => {
@@ -153,7 +153,7 @@ const tabsFAQ = () => {
       block.classList.add("in");
     }
   })
-  
+
 }
 tabsFAQ();
 
@@ -196,25 +196,25 @@ const calc = () => {
   const accordion = document.getElementById("accordion"),
     tabs = accordion.querySelectorAll(".panel-collapse"),
     tabsArray = Array.prototype.slice.call(tabs);
-    // console.log(tabsArray);
-    
+  // console.log(tabsArray);
+
 
   accordion.addEventListener("click", (event) => {
     let target = event.target;
-    
+
     if (target.closest(".construct-btn") || target.closest("span")) {
-      
+
     }
 
     target = target.closest(".panel-heading");
-    
+
     const hideBlocks = () => {
       const blocks = accordion.querySelectorAll(".panel-collapse");
       blocks.forEach((item) => {
         item.classList.remove("in");
       });
     };
-    
+
     if (target) {
       event.preventDefault();
       const block = target.parentNode.querySelector(".panel-collapse");
@@ -222,7 +222,63 @@ const calc = () => {
       block.classList.add("in");
     }
   });
-  
+
+  const twoBlockSelectBox = accordion.querySelectorAll(".select-box"),
+    twoBlockTitleText = accordion.querySelectorAll(".title-text"),
+    onoffswitchCheckbox = accordion.querySelector(".onoffswitch-checkbox"),
+    formControl = accordion.querySelectorAll(".form-control");
+    const calcResult = document.getElementById("calc-result");    
+    
+    let total = 15000;
+    
+    calcResult.value = total;
+    
+
+    onoffswitchCheckbox.addEventListener('change', () => {
+      if (onoffswitchCheckbox.value === 'on') {
+        
+        twoBlockTitleText[1].style.display = "none";
+        twoBlockSelectBox[2].style.display = "none";
+        twoBlockSelectBox[3].style.display = "none";
+        onoffswitchCheckbox.value = "off";
+        calcResult.value = '10000'
+      } else {
+        twoBlockTitleText[1].style.display = "block";
+        twoBlockSelectBox[2].style.display = "inline-block";
+        twoBlockSelectBox[3].style.display = "inline-block";
+        onoffswitchCheckbox.value = "on";
+        calcResult.value = "15000";
+      }
+
+    })
+
+    accordion.addEventListener('change', () => {
+      if (formControl[0].options.selectedIndex === 1) {
+        total = total + total * 1.20;
+            calcResult.value = total;
+
+      } else {
+
+      }
+      console.log(formControl);
+      
+      console.log(formControl[0].options.selectedIndex);
+      console.log(formControl[1].options.selectedIndex);
+      console.log(formControl[2].options.selectedIndex);
+      console.log(formControl[3].options.selectedIndex);
+      
+
+
+    })
+    
+    
+    
+    /**
+     * подсчёт
+     */
+    
+
+
 }
 calc();
 
@@ -257,28 +313,28 @@ const sendForm = () => {
 
   allForms.forEach((item) => {
     // console.log(item);
-    
+
     const inputs = item.querySelectorAll("input");
     item.addEventListener("submit", (event) => {
       event.preventDefault();
       item.appendChild(statusMessage);
       statusMessage.textContent = loadMessage;
       console.log(item.parentNode.parentNode.parentNode);
-      
+
       const formData = new FormData(item);
       let body = {};
       formData.forEach((val, key) => {
         body[key] = val;
       });
-                if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
-                  let question = document.querySelector(
-                    'input[name="user_quest"]'
-                  );
-                  body.user_quest = question.value;
-                  console.log(body);
-                  
-                  console.log("попался");
-                }
+      if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+        let question = document.querySelector(
+          'input[name="user_quest"]'
+        );
+        body.user_quest = question.value;
+        console.log(body);
+
+        console.log("попался");
+      }
       postData(body)
         .then((response) => {
           if (response.status !== 200) {
@@ -296,10 +352,10 @@ const sendForm = () => {
             statusMessage.remove();
           }, 5000);
         });
-        if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
-          let question = document.querySelector('input[name="user_quest"]');
-          question.value = '';  
-        }
+      if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+        let question = document.querySelector('input[name="user_quest"]');
+        question.value = '';
+      }
     });
     inputs.forEach((itemInput) => {
       itemInput.value = "";
@@ -319,7 +375,7 @@ const sendForm = () => {
         }
       });
     });
-    
+
   });
 };
 
