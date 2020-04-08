@@ -36,7 +36,7 @@ const sendForm = () => {
         let question = document.querySelector('input[name="user_quest"]');
         body.user_quest = question.value;
       }
-      if (form[4].parentNode.parentNode.parentNode.matches(".from_calc")) {
+      if (item[4].parentNode.parentNode.parentNode.matches(".from_calc")) {
         return;
       }
 
