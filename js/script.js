@@ -193,190 +193,255 @@ buttonMore();
 
 const calc = () => {
 
-  const accordion = document.getElementById("accordion"),
-    tabs = accordion.querySelectorAll(".panel-collapse"),
-    tabsArray = Array.prototype.slice.call(tabs);
-  // console.log(tabsArray);
+    const accordion = document.getElementById("accordion"),
+      tabs = accordion.querySelectorAll(".panel-collapse"),
+      tabsArray = Array.prototype.slice.call(tabs);
+    // console.log(tabsArray);
 
 
-  accordion.addEventListener("click", (event) => {
-    let target = event.target;
+    accordion.addEventListener("click", (event) => {
+      let target = event.target;
 
-    if (target.closest(".construct-btn") || target.closest("span")) {
+      if (target.closest(".construct-btn") || target.closest("span")) {
 
-    }
+      }
 
-    target = target.closest(".panel-heading");
+      target = target.closest(".panel-heading");
 
-    const hideBlocks = () => {
-      const blocks = accordion.querySelectorAll(".panel-collapse");
-      blocks.forEach((item) => {
-        item.classList.remove("in");
-      });
+      const hideBlocks = () => {
+        const blocks = accordion.querySelectorAll(".panel-collapse");
+        blocks.forEach((item) => {
+          item.classList.remove("in");
+        });
+      };
+
+      if (target) {
+        event.preventDefault();
+        const block = target.parentNode.querySelector(".panel-collapse");
+        hideBlocks();
+        block.classList.add("in");
+      }
+    });
+
+    const twoBlockSelectBox = accordion.querySelectorAll(".select-box"),
+      twoBlockTitleText = accordion.querySelectorAll(".title-text"),
+      onoffswitchCheckbox = document.getElementById("myonoffswitch"),
+      myonoffswitchTwo = document.getElementById("myonoffswitch-two"),
+      formControl = accordion.querySelectorAll(".form-control");
+    const calcResult = document.getElementById("calc-result");
+
+    let dataCalc = {
+      type: 15000,
+      oneDiameter: 0,
+      oneRings: 0,
+      twoDiameter: 0,
+      twoRings: 0,
+      bottom: 2000,
+      distance: 0
     };
 
-    if (target) {
-      event.preventDefault();
-      const block = target.parentNode.querySelector(".panel-collapse");
-      hideBlocks();
-      block.classList.add("in");
-    }
-  });
+    const showResult = () => {
+      let type = dataCalc.type,
+        oneDiameter = dataCalc.type * dataCalc.oneDiameter,
+        oneRings = dataCalc.type * dataCalc.oneRings,
+        twoDiameter = dataCalc.type * dataCalc.twoDiameter,
+        twoRings = dataCalc.type * dataCalc.twoRings,
+        bottom = dataCalc.bottom;
 
-  const twoBlockSelectBox = accordion.querySelectorAll(".select-box"),
-    twoBlockTitleText = accordion.querySelectorAll(".title-text"),
-    onoffswitchCheckbox = accordion.querySelector(".onoffswitch-checkbox"),
-    formControl = accordion.querySelectorAll(".form-control");
-    const calcResult = document.getElementById("calc-result");    
-    
-    let total = 15000;
-    
-    calcResult.value = total;
-    
+      return type + oneDiameter + oneRings + twoDiameter + twoRings + bottom;
+
+    }
+    calcResult.value = showResult();
+
 
     onoffswitchCheckbox.addEventListener('change', () => {
       if (onoffswitchCheckbox.value === 'on') {
-        
+
         twoBlockTitleText[1].style.display = "none";
         twoBlockSelectBox[2].style.display = "none";
         twoBlockSelectBox[3].style.display = "none";
         onoffswitchCheckbox.value = "off";
-        calcResult.value = '10000'
+        dataCalc.type = 10000;
+        dataCalc.twoDiameter = 0;
+        dataCalc.twoRings = 0;
       } else {
         twoBlockTitleText[1].style.display = "block";
         twoBlockSelectBox[2].style.display = "inline-block";
         twoBlockSelectBox[3].style.display = "inline-block";
         onoffswitchCheckbox.value = "on";
-        calcResult.value = "15000";
+        dataCalc.type = 15000;
       }
 
     })
 
     accordion.addEventListener('change', () => {
-      if (formControl[0].options.selectedIndex === 1) {
-        total = total + total * 1.20;
-            calcResult.value = total;
-
-      } else {
-
-      }
-      console.log(formControl);
-      
-      console.log(formControl[0].options.selectedIndex);
-      console.log(formControl[1].options.selectedIndex);
-      console.log(formControl[2].options.selectedIndex);
-      console.log(formControl[3].options.selectedIndex);
-      
-
-
-    })
-    
-    
-    
-    /**
-     * подсчёт
-     */
-    
-
-
-}
-calc();
-
-
-/**
-* 
-* 
-//Отправка форм
-* 
-*
-*/
-
-
-const sendForm = () => {
-  const errorMessage = " Что то пошло не так...",
-    loadMessage = "Загрузка...",
-    successMessage = "Спасибо! Мы скоро с вами свяжемся!",
-    statusMessage = document.createElement("div");
-  statusMessage.style.cssText = "font-size: 2rem;";
-
-  const allForms = document.querySelectorAll("form");
-
-  const postData = (body) => {
-    return fetch("./server.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-  };
-
-  allForms.forEach((item) => {
-    // console.log(item);
-
-    const inputs = item.querySelectorAll("input");
-    item.addEventListener("submit", (event) => {
-      event.preventDefault();
-      item.appendChild(statusMessage);
-      statusMessage.textContent = loadMessage;
-      console.log(item.parentNode.parentNode.parentNode);
-
-      const formData = new FormData(item);
-      let body = {};
-      formData.forEach((val, key) => {
-        body[key] = val;
-      });
-      if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
-        let question = document.querySelector(
-          'input[name="user_quest"]'
-        );
-        body.user_quest = question.value;
-        console.log(body);
-
-        console.log("попался");
-      }
-      postData(body)
-        .then((response) => {
-          if (response.status !== 200) {
-            throw new Error("status network not 200");
-          }
-          statusMessage.textContent = successMessage;
-          inputs.forEach((itemInput) => (itemInput.value = ""));
-          setTimeout(() => {
-            statusMessage.remove();
-          }, 5000);
-        })
-        .catch(() => {
-          statusMessage.textContent = errorMessage;
-          setTimeout(() => {
-            statusMessage.remove();
-          }, 5000);
-        });
-      if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
-        let question = document.querySelector('input[name="user_quest"]');
-        question.value = '';
-      }
-    });
-    inputs.forEach((itemInput) => {
-      itemInput.value = "";
-      itemInput.addEventListener("input", (e) => {
-        const target = e.target;
-
-        if (
-          target.getAttribute("name") == "user_name" ||
-          target.getAttribute("name") == "user_message" ||
-          target.getAttribute("name") == "user_quest"
-        ) {
-          target.value = target.value.replace(/[^\W]/gi, "");
-        } else if (target.getAttribute("name") == "user_email") {
-          target.value = target.value.replace(/.+@.+\..{1,}&/i, "");
-        } else if (target.getAttribute("name") == "user_phone") {
-          target.value = target.value.replace(/[^\+\d]/g, "");
+        if (formControl[0].options.selectedIndex === 1) {
+          dataCalc.oneDiameter = 0.2;
+        } else {
+          dataCalc.oneDiameter = 0;
         }
+
+        if (formControl[1].options.selectedIndex === 1) {
+          dataCalc.oneRings = 0.3;
+        } else if (formControl[1].options.selectedIndex === 2) {
+          dataCalc.oneRings = 0.5;
+        } else {
+          dataCalc.oneRings = 0;
+        }
+
+        if (formControl[2].options.selectedIndex === 1) {
+          dataCalc.twoDiameter = 0.2;
+        } else {
+          dataCalc.twoDiameter = 0;
+        }
+
+        if (formControl[3].options.selectedIndex === 1) {
+          dataCalc.twoRings = 0.3;
+        } else if (formControl[3].options.selectedIndex === 2) {
+          dataCalc.twoRings = 0.5;
+        } else {
+          dataCalc.twoRings = 0;
+        }
+
+
+        console.log(myonoffswitchTwo.value);
+        
+          if (myonoffswitchTwo.value === 'on') {
+            dataCalc.bottom = 0;
+            myonoffswitchTwo.value = "off";
+          } else {
+                if (onoffswitchCheckbox.value === 'on') {
+                  dataCalc.bottom = 2000;
+                } else {
+                  dataCalc.bottom = 1000;
+                }
+            myonoffswitchTwo.value = "on";
+          }
+
+
+          calcResult.value = showResult();
+          // console.log(dataCalc);
+
+
+
+
+          // console.log(formControl);
+
+          // console.log(formControl[0].options.selectedIndex);
+          // console.log(formControl[1].options.selectedIndex);
+          // console.log(formControl[2].options.selectedIndex);
+          // console.log(formControl[3].options.selectedIndex);
+
+
+
+        })
+
+
+
+      /**
+       * подсчёт
+       */
+
+
+
+    }
+    calc();
+
+
+    /**
+    * 
+    * 
+    //Отправка форм
+    * 
+    *
+    */
+
+
+    const sendForm = () => {
+      const errorMessage = " Что то пошло не так...",
+        loadMessage = "Загрузка...",
+        successMessage = "Спасибо! Мы скоро с вами свяжемся!",
+        statusMessage = document.createElement("div");
+      statusMessage.style.cssText = "font-size: 2rem;";
+
+      const allForms = document.querySelectorAll("form");
+
+      const postData = (body) => {
+        return fetch("./server.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      };
+
+      allForms.forEach((item) => {
+        // console.log(item);
+
+        const inputs = item.querySelectorAll("input");
+        item.addEventListener("submit", (event) => {
+          event.preventDefault();
+          item.appendChild(statusMessage);
+          statusMessage.textContent = loadMessage;
+          console.log(item.parentNode.parentNode.parentNode);
+
+          const formData = new FormData(item);
+          let body = {};
+          formData.forEach((val, key) => {
+            body[key] = val;
+          });
+          if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+            let question = document.querySelector(
+              'input[name="user_quest"]'
+            );
+            body.user_quest = question.value;
+            console.log(body);
+
+            console.log("попался");
+          }
+          postData(body)
+            .then((response) => {
+              if (response.status !== 200) {
+                throw new Error("status network not 200");
+              }
+              statusMessage.textContent = successMessage;
+              inputs.forEach((itemInput) => (itemInput.value = ""));
+              setTimeout(() => {
+                statusMessage.remove();
+              }, 5000);
+            })
+            .catch(() => {
+              statusMessage.textContent = errorMessage;
+              setTimeout(() => {
+                statusMessage.remove();
+              }, 5000);
+            });
+          if (item.parentNode.parentNode.parentNode.matches(".popup-consultation")) {
+            let question = document.querySelector('input[name="user_quest"]');
+            question.value = '';
+          }
+        });
+        inputs.forEach((itemInput) => {
+          itemInput.value = "";
+          itemInput.addEventListener("input", (e) => {
+            const target = e.target;
+
+            if (
+              target.getAttribute("name") == "user_name" ||
+              target.getAttribute("name") == "user_message" ||
+              target.getAttribute("name") == "user_quest"
+            ) {
+              target.value = target.value.replace(/[^\W]/gi, "");
+            } else if (target.getAttribute("name") == "user_email") {
+              target.value = target.value.replace(/.+@.+\..{1,}&/i, "");
+            } else if (target.getAttribute("name") == "user_phone") {
+              target.value = target.value.replace(/[^\+\d]/g, "");
+            }
+          });
+        });
+
       });
-    });
+    };
 
-  });
-};
-
-sendForm();
+    sendForm();
