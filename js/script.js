@@ -40,14 +40,24 @@ popupRecall();
 const popupOrder = () => {
   const orederLink = document.querySelectorAll(".discount-btn"),
     orederPopup = document.querySelector(".popup-discount"),
+    distanceInput = document.querySelectorAll('input[type="text"]'),
     sendCalk = document.querySelector(".construct-btn.call-btn");
+    console.log(distanceInput);
 
   sendCalk.addEventListener("click", () => {
-    orederPopup.style.display = "block";
+    if (distanceInput[3].value.trim() !== "") {
+      orederPopup.style.display = "block";
+      distanceInput[3].style.border = "none";
+      orederPopup.classList.add("from_calc");
+
+    } else {
+      distanceInput[3].style.border = "1px solid red";
+    }
   });
 
   orederLink.forEach((item) => {
     item.addEventListener("click", (event) => {
+orederPopup.classList.remove("from_calc");
       orederPopup.style.display = "block";
     });
   });
@@ -366,6 +376,9 @@ const calc = () => {
     // console.log(dataCalc);
 
     console.log(postDataCalc);
+
+
+    
   });
 
   // const sendCalc = accordion.querySelector(".construct-btn.call-btn");
@@ -418,10 +431,10 @@ const calc = () => {
     formData.forEach((val, key) => {
       body[key] = val;
     });
-    if (form[4].parentNode.parentNode.parentNode.matches(".popup-discount")) {
+    if (form[4].parentNode.parentNode.parentNode.matches(".from-calc")) {
       let calcData = postDataCalc;
       body.calcData = calcData;
-    }
+    } else {return};
     postData(body)
       .then((response) => {
         if (response.status !== 200) {
@@ -510,6 +523,9 @@ const sendForm = () => {
           'input[name="user_quest"]'
         );
         body.user_quest = question.value;
+      }
+      if (form[4].parentNode.parentNode.parentNode.matches(".from-calc")) {
+        return
       }
       
         postData(body)
