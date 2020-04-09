@@ -30,15 +30,15 @@ const sendForm = () => {
       formData.forEach((val, key) => {
         body[key] = val;
       });
-      if (
-        item.parentNode.parentNode.parentNode.matches(".popup-consultation")
-      ) {
-        let question = document.querySelector('input[name="user_quest"]');
-        body.user_quest = question.value;
-      }
-      if (item[4].parentNode.parentNode.parentNode.matches(".from_calc")) {
-        return;
-      }
+      // if (
+      //   item.parentNode.parentNode.parentNode.matches(".popup-consultation")
+      // ) {
+      //   let question = document.querySelector('input[name="user_quest"]');
+      //   body.user_quest = question.value;
+      // }
+      // if (item[4].parentNode.parentNode.parentNode.matches(".from_calc")) {
+      //   return;
+      // }
 
       postData(body)
         .then((response) => {

@@ -18,6 +18,9 @@ const calc = () => {
       event.preventDefault();
       target = target.closest(".panel-default");
       showPanel(target.nextElementSibling.childNodes[3]);
+    } else if (target.closest("button")) {
+      popupDiscount.classList.add("form-calc");
+      popupDiscount.style.display = "block";
     }
 
     target = target.closest(".panel-heading");
@@ -192,9 +195,13 @@ const calc = () => {
   const inputs = form[4].querySelectorAll("input");
   form[4].addEventListener("submit", (event) => {
     event.preventDefault();
-    form[4].appendChild(statusMessage);
-    statusMessage.textContent = loadMessage;
+    const calcForm = form[4].closest('.popup-discount');
+    if(calcForm.classList.contains('form-calc')) {
+      form[4].appendChild(statusMessage);
+      statusMessage.textContent = loadMessage;
+      //console.log(form[4].parentNode.parentNode.parentNode);
 
+      console.log('sendcalc!!!', calcForm);
     const formData = new FormData(form[4]);
     let body = {};
     formData.forEach((val, key) => {
@@ -223,6 +230,7 @@ const calc = () => {
           statusMessage.remove();
         }, 5000);
       });
+    }
   });
   inputs.forEach((itemInput) => {
     itemInput.value = "";
